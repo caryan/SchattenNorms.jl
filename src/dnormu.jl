@@ -17,7 +17,7 @@ function dist_to_neighbour( ar )
 end
 
 """
-worstfidelity(U,V) 
+worstfidelity(U,V)
 
 For two unitaries `U` and `V`, `worstfidelity(U,V)` is the worst case
 Jozsa fidelity between `U*a` and `V*a`, where `a` is a complex vector
@@ -28,26 +28,26 @@ function worstfidelity(u::Matrix, v::Matrix)
     if size(u) != size(v)
         error("Input matrices do not have the same size")
     end
-    
+
     #local variables
     e  = eigvals(u'*v) # eigenvalues of u'*v
-    es = sortrows(hcat(e,angle(e)+pi),by=x->real(x[2]))
+    es = sortrows(hcat(e,angle.(e)+pi),by=x->real(x[2]))
     d  = es[:,1]
     f  = 0
-    
+
     #es(:,2) = es(:,2)-pi;
     n = length(d)
-    
+
     # find the minimum distance from the convex hull
     # of the distinct eigenvalues to the origin. if
-    # the origin is contained in the convex hull, 
+    # the origin is contained in the convex hull,
     # that distance is defined as 0.
     if n==1
         f = 1
-    else 
+    else
         if n==2
             f = orig_to_line(d[1],d[2])
-        else 
+        else
             dn = dist_to_neighbour(angle(d))
             dn[1] = 2*pi-sum(dn[2:n])  # the sum of the angular separations is 2*pi
             # and the boundary cases are funny
@@ -83,7 +83,7 @@ Diamond norm distance between two unitary operations.
   Equivalent to `dnorm(liou(U)-liou(V))`, under the assumption `U` and
   `V` are unitary matrices. However the `ddist` call is much more
   accurate and much faster due to properties of unitary matrices and
-  the corresponding superoperators. 
+  the corresponding superoperators.
 
   **Note:** for this particular case, the matrices in question are not
     the superoperators corresponding to the unitary operation, but
